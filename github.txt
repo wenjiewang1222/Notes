@@ -1,11 +1,33 @@
 ls -a  列出所在文件夹的所有文件
 
+git clone 克隆代码库至本地 （git clone 代码库的URL ）
 git log  查看代码库的提交
 git status 查看文件当前状态
 git add 将文件添加到暂存区（staging area）（eg. git add github.txt）
 git commit 提交暂存区的文件
 git diff   对比两次提交的内容（git diff id1 id2），或者查看文件提交前所做的更改(git diff 后面不加任何参数）。
-git diff staged 更改添加至暂存区后可运行该命令查看暂存区文件提交前的更改。
+git diff --staged 更改添加至暂存区后可运行该命令查看暂存区文件提交前的更改。
+git reset --hard 放弃工作目录或暂存区的所有更改。且无法再恢复这些更改。慎重！！！
+git branch 查看和创建分支（git branch 后面不加任何参数：查看当前分支，git branch 分支名：创建名为“分支名”的分支。）
+git checkout 分支名  检出分支（即更改当前分支至“分支名”，之后文件的更改提交至分支当中，主枝的文件不做修改。）
+git log --graph --oneline 分支1 分支2 查看分支1,2 的更改日志。
+git checkout -b new_branch_name = (git branch new_branch_name)+(git checkout new_branch_name)
+git merge branch_name1 branch_name2 (合并分支1，分支2）
+git show ID1  （查看ID1基于其父级基础上的更改）
+git branch -d branch_name  删除分支，只会删除标签，不会删除分支上的提交 （合并分支后可以将不需要的分支删除，如合并主分支和分支1后，可以将分支1删除。）
+
+有关 git merge 的说明
+git merge 还将在合并的版本中包含当前检出的分支。因此，如果检出了 branch1，并且运行 git merge branch2 branch3，
+则合并的版本会将 branch1 以及 branch2 和 branch3 组合起来。由于在你进行合并提交后 branch1 标签将会更新，因此，
+你不想将 branch1 中的更改包含在合并中是不可能的。有鉴于此，在合并之前应始终检出你打算合并的两个分支之一。应检
+出哪个分支取决于你想让哪个分支标签指向新的提交。
+
+由于检出的分支始终包含在合并中，因此，你可能已猜到，在合并两个分支时，无需在命令行上将两者都指定为 git merge 
+的参数。如果想将 branch2 合并到 branch1 中，只需键入 git checkout branch1，然后键入 git merge branch2 即可。
+键入 git merge branch1 branch2 的唯一原因是，它能帮助你对要合并的分支更加心中有数。
+
+另外，由于是合并两个分支，因此在命令行中按何顺序键入分支并不重要。关键是要记住，git merge 始终将所有指定的分支
+合并到当前检出的分支中，并为该分支新建一个提交。
 
 创建远程代码库：
 1，在本地创建一个文件夹（working directory）（可以是空的，以后再往里面加东西，也可以是已经包含文件的文件夹。）
@@ -16,3 +38,6 @@ git diff staged 更改添加至暂存区后可运行该命令查看暂存区文件提交前的更改。
 6，文件更改后还未添加至暂存区，可以运行 git diff 查看更改
 git remote  查看和创建远程代码库
 git remote add  添加远程代码库（eg. git remote add origin https://github.com/wenjiewang1222/Notes.git）
+git remote -v 输出远程代码库的更多信息
+git push 向远程代码库推送 （eg. git push 远程代码库名称 推送的分支（git push note master））
+git pull 把远程代码库的文件推送至本地代码库 （git pull 远程代码库名称 推送的远程代码库分支）
