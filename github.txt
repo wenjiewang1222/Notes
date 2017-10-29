@@ -1,0 +1,11 @@
+ls -a  列出所在文件夹的所有文件
+
+git log  查看代码库的提交
+git status 
+
+创建远程代码库：
+1，在本地创建一个文件夹（可以是空的，以后再往里面加东西，也可以是已经包含文件的文件夹。）
+2，导航到该文件夹目录下运行 git init 初始化代码库。
+3，
+git remote  查看和创建远程代码库
+git remote add  添加远程代码库（eg. git remote add origin https://github.com/wenjiewang1222/Notes.git）
