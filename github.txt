@@ -1,11 +1,18 @@
 ls -a  列出所在文件夹的所有文件
 
 git log  查看代码库的提交
-git status 
+git status 查看文件当前状态
+git add 将文件添加到暂存区（staging area）（eg. git add github.txt）
+git commit 提交暂存区的文件
+git diff   对比两次提交的内容（git diff id1 id2），或者查看文件提交前所做的更改(git diff 后面不加任何参数）。
+git diff staged 更改添加至暂存区后可运行该命令查看暂存区文件提交前的更改。
 
 创建远程代码库：
-1，在本地创建一个文件夹（可以是空的，以后再往里面加东西，也可以是已经包含文件的文件夹。）
+1，在本地创建一个文件夹（working directory）（可以是空的，以后再往里面加东西，也可以是已经包含文件的文件夹。）
 2，导航到该文件夹目录下运行 git init 初始化代码库。
-3，
+3，添加文件夹里的文件到存储区（eg. git add github.txt）
+4，运行git commit 提交暂存区的文件，在打开的编辑器中编写更改内容。
+5，运行git log 查看该提交是否创建。
+6，文件更改后还未添加至暂存区，可以运行 git diff 查看更改
 git remote  查看和创建远程代码库
 git remote add  添加远程代码库（eg. git remote add origin https://github.com/wenjiewang1222/Notes.git）
