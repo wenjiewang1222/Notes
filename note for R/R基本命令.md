@@ -73,7 +73,13 @@ Caculate the average of the mpg.
 
 **setwd('~/Downloads')**   更改当前工作目录
 
+**list.files()**    查看当前目录的文件
+
 **data <- read.csv('stateData.csv')** 读取CSV文件
+
+**pf <- read.delim('pseudo_facebook.tsv')**
+
+**read.delim()** 函数默认使用制表符作为值之间的分隔符，并使用句点作为十进制字符。
 
 **subset(data, state.region == 1)**  创建state.region = 1 的子集
 

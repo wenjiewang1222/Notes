@@ -41,3 +41,4 @@ git remote add  添加远程代码库（eg. git remote add origin https://github.com/wen
 git remote -v 输出远程代码库的更多信息
 git push 向远程代码库推送 （eg. git push 远程代码库名称 推送的分支（git push note master））
 git pull 把远程代码库的文件推送至本地代码库 （git pull 远程代码库名称 推送的远程代码库分支）
+git pull --allow-unrelated-histories

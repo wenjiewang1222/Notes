@@ -1,0 +1,187 @@
+---
+title: "lesson4(two variables)"
+author: "wwj"
+date: "2017å¹?10æœ?30æ—?"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+lesson4
+===============================================
+## Scatter Plots
+```{r}
+getwd()
+setwd("C:/Users/wj/desktop/R")
+library(ggplot2)
+pf <- read.csv("facebook.tsv", sep = "\t")
+
+qplot(x = age, y = friend_count, data = pf)
+qplot(age, friend_count, data = pf)
+```
+
+## ggplot Syntax
+```{r}
+qplot(x = age, y = friend_count, data = pf)
+
+ggplot(aes(x = age, y = friend_count), data = pf)+
+  geom_point() + xlim(13, 90)
+
+summary(pf$age)
+```
+
+
+## Overplotting
+```{r}
+ggplot(aes(x = age, y = friend_count), data = pf)+
+  geom_jitter(alpha = 1/20) +
+  xlim(13, 90)
+```
+
+## coord_trans()
+```{r}
+ggplot(aes(x = age, y = friend_count),data = pf) +
+  geom_point(alpha = 1/20) +
+  xlim(13, 90) +
+  coord_trans(y = "sqrt")
+```
+
+## Alpha and Jitter
+Explore the relationship between friends initiated vs age.
+```{r}
+names(pf)
+ggplot(aes(x = age, y = friendships_initiated), data = pf) +
+  geom_point(alpha = 1/10, position = position_jitter(h = 0)) +
+  xlim(13, 90) +
+  coord_trans(y = "sqrt")
+```
+
+## Conditional Means
+```{r}
+library('dplyr')
+
+filter()
+group_by()
+mutate()
+arrange()
+
+age_groups <- group_by(pf, age)
+pf.fc_by_age <- summarise(age_groups,
+                        friend_count_mean = mean(friend_count),
+                        friend_count_median = median(friend_count),
+                        n = n())
+pf.fc_by_age <- arrange(pf.fc_by_age, age)
+head(pf.fc_by_age)
+```
+
+## Conditional Means Alternate Code
+```{r}
+pf.fc_by_age <- pf %>%
+  group_by(age)%>%
+  summarise(friend_count_mean = mean(friend_count),
+            friend_count_median = median(friend_count),
+            n = n()) %>%
+  arrange(age)
+
+head(pf.fc_by_age)
+```
+
+## Create line plot
+```{r}
+ggplot(aes(x = age, y = friend_count_mean),data = pf.fc_by_age) +
+  geom_line()
+```
+
+## Overlaying Summaries with Raw Data
+```{r}
+ggplot(aes(x = age, y = friend_count), data = pf) +
+  geom_point(alpha = 0.05,
+             position = position_jitter(h = 0),
+             color = "orange") +
+  coord_cartesian(xlim = c(13, 90), ylim = c(0, 1000)) +
+  geom_line(stat = "summary", fun.y = mean) +
+  geom_line(stat = "summary", fun.y = quantile, 
+            fun.args = list(probs = 0.1),
+            linetype = 2, color = "blue") +
+  geom_line(stat = "summary", fun.y = quantile,
+            fun.args = list(probs = 0.5),
+            color = "red") +
+  geom_line(stat = "summary", fun.y = quantile,
+            fun.args = list(probs = 0.9),
+            linetype = 2, color = "green")
+```
+
+## Correlation
+```{r}
+cor(pf$age, pf$friend_count)
+
+cor.test(pf$age, pf$friend_count, method = "pearson")
+
+with(pf, cor.test(age, friend_count, method = "pearson"))
+```
+
+## Correlation on Subsets Solution
+```{r}
+with(subset(pf, age <= 70), cor.test(age, friend_count, method = "pearson"))
+```
+
+## Create Scatter plot with www_likes_received vs likes_received
+```{r}
+ggplot(aes(x = www_likes_received, y = likes_received), data = pf) +
+  geom_point() +
+  coord_cartesian(xlim = c(0, 65000), ylim = c(0, 180000))
+```
+
+## Strong Correlations
+```{r}
+ggplot(aes(x = www_likes_received, y = likes_received), data = pf) +
+  geom_point() +
+  xlim(0, quantile(pf$www_likes_received, 0.95)) +
+  ylim(0, quantile(pf$likes_received, 0.95)) +
+  geom_smooth(method = "lm", color = "red")
+cor.test(pf$www_likes_received, pf$likes_received, method = "pearson")
+```
+
+## More Caution with Correlation
+```{r}
+install.packages('alr3')
+install.packages('car')
+install.packages('minqa')
+library(alr3)
+data(Mitchell)
+names(Mitchell)
+```
+
+```{r}
+library(ggplot2)
+ggplot(aes(x = Month, y = Temp), data = Mitchell) +
+  geom_point() +
+  geom_smooth(method = "lm",color = "red")
+cor.test(Mitchell$Month, Mitchell$Temp, mothod = "pearson")
+```
+
+## Making Sence of Data
+```{r}
+ggplot(aes(x = Month, y = Temp), data = Mitchell) +
+  geom_point() +
+  scale_x_continuous(limits = c(0, 203), breaks = seq(0, 203, 12))
+```
+
+## Create a 'age_with_months' variable
+```{r}
+pf$age_with_months <- pf$age + (1 - pf$dob_month/12)
+pf.fc_by_age_months <- pf %>%
+  group_by(age_with_months) %>%
+  summarise(friend_count_mean = mean(friend_count),
+            friend_count_median = median(friend_count),
+            n = n()) %>%
+  arrange(age_with_months)
+head(pf.fc_by_age_months)
+```
+
+## Create a line plot showing friend_count_mean vs age_with_months
+```{r}
+ggplot(aes(x = age_with_months, y = friend_count_mean), 
+       data = subset(pf.fc_by_age_months, age_with_months < 71)) +
+  geom_line()
+```
+
