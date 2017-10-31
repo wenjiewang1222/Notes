@@ -1,0 +1,84 @@
+---
+title: "Untitled"
+author: "wwj"
+date: "2017年10月31日"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(ggplot2)
+data("diamonds")
+names(diamonds)
+
+ggplot(aes(x = price, y = x), data = diamonds) +
+  geom_point(alpha = 1/20)
+
+cor.test(x = diamonds$price, y = diamonds$x, method = "pearson")
+cor.test(x = diamonds$price, y = diamonds$y, method = "pearson")
+cor.test(x = diamonds$price, y = diamonds$z, method = "pearson")
+
+ggplot(aes(x = depth, y = price), data = diamonds) +
+  geom_point(alpha = 1/200) +
+  scale_x_continuous(limits = c(50, 70), breaks = seq(50, 70, 2))
+
+cor.test(x = diamonds$depth, y = diamonds$price, method = "pearson")
+```
+
+```{r}
+ggplot(aes(x = carat, y = price), data = diamonds) +
+  geom_point() +
+  xlim(0, quantile(diamonds$carat, 0.9)) +
+  ylim(0, quantile(diamonds$price, 0.9))
+
+```
+
+```{r}
+diamonds$volume <- diamonds$x * diamonds$y * diamonds$z
+ggplot(aes(x = volume, y = price), data = diamonds) +
+  geom_point()
+vol <- subset(diamonds,0 < volume&volume <= 800)
+cor.test(x = vol$volume, y = vol$price, method = "pearson" )
+```
+
+```{r}
+vol <- subset(diamonds, 0 < volume & volume <= 800) 
+ggplot(aes(x = volume, y = price), data = vol) +
+  geom_point(alpha = 1/50, color = "orange") +
+  geom_smooth(method = 'lm', color = 'blue')
+```
+
+```{r}
+library(dplyr)
+diamondsByClarity <- diamonds %>%
+  group_by(clarity) %>%
+  summarise(mean_price = mean(price),
+            median_price = median(price),
+            min_price = min(price),
+            max_price = max(price),
+            n = n()) 
+head(diamondsByClarity)
+  
+```
+
+```{r}
+library(gridExtra)
+diamonds_by_clarity <- group_by(diamonds, clarity)
+diamonds_mp_by_clarity <- summarise(diamonds_by_clarity, mean_price = mean(price)) 
+arrange(diamonds_mp_by_clarity, clarity)
+head(diamonds_mp_by_clarity)
+
+diamonds_by_color <- group_by(diamonds, color)
+diamonds_mp_by_color <- summarise(diamonds_by_color, mean_price = mean(price))
+arrange(diamonds_mp_by_color, color)
+p1 = ggplot(aes(x = clarity, y = mean_price),
+       data = diamonds_mp_by_clarity) +
+  geom_bar(stat="identity")
+p2 = ggplot(aes(x = color, y = mean_price),
+           data = diamonds_mp_by_color) +
+  geom_bar(stat="identity")
+grid.arrange(p1, p2, ncol = 1)
+
+```
+
